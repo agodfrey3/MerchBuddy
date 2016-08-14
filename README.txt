@@ -18,6 +18,9 @@ scrape all the items once, I will work on a second script to run that will only 
 decrease the necessary run time to complete a full scan. That function is currently operational, however, I will not push it 
 until it, too, has the extended data that was just added into the initial scraper. 
 
+8-13-2016
+The mySQL insertion tool has been completed, so the initial scraper and primary scrapers are fully fuctional as far as data storing goes. Improvements will continue to be made, however. Daily scrapes will be setup on our server to start collecting data. Run time should be around 12:00 daily to ensure the game update has taken place already.  
+
 Languages used: 
 Python(2.7)
 Python(3.5)
