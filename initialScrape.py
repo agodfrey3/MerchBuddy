@@ -19,9 +19,9 @@ def do_scrape( length ):
     x            = 0  
  
     #Creates or edits text files that will contain item information
-    items        = open( 'itemInfo'  + str(today) + '.csv' , 'w' )
-    used_items   = open( 'ID_used'   + str(today) + '.txt' , 'w' )
-    unused_items = open( 'ID_unused' + str(today) + '.txt' , 'w' )   
+    items        = open( 'logFiles/itemInfo'  + str(today) + '.csv' , 'w' )
+    used_items   = open( 'logFiles/ID_used'   + str(today) + '.txt' , 'w' )
+    unused_items = open( 'logFiles/ID_unused' + str(today) + '.txt' , 'w' )   
   
     #Used for Bug testing
     successful   = 0
@@ -52,7 +52,13 @@ def do_scrape( length ):
                     day90_change       = data['item']['day90']['change']
                     day180_trend       = data['item']['day180']['trend']
                     day180_change      = data['item']['day180']['change']
-                    #writes to a csv file for backup   
+                    #Eliminates errors in the name string
+		    item = data['item']['name']
+                    item = item.replace("'" , "")
+                    #Inputs data to mySQL database
+                    sequel( ID, item, icon_large, descr, is_members, curr_price, price_change_today, curr_trend, trend_today, day30_trend,
+			day30_change, day90_trend, day90_change, day180_trend, day180_change ) 
+		    #writes to a csv file for backup   
                     items.write(
                        str(item)         + '|'      + str(ID)           + '|' + icon_large              + '|' + str(descr) + '|'        + 
                        str(is_members)   + '|'      + str(curr_price)   + '|' + str(price_change_today) + '|' + str(curr_trend)  + '|' + 
@@ -60,8 +66,7 @@ def do_scrape( length ):
                        str(day90_change) + '|'      + str(day180_trend) + '|' + str(day180_change)      + '|' + '\n' )
                     
                     used_items.write(str(x) + '\n')
-                    #Call to MYSQL Adder Function will go here when it is revised to use all data
-		    x += 1
+                    x += 1
                     print "Found item: " + str( item )
             #If item is not tradeable, this runs
             except urllib2.HTTPError:
@@ -89,10 +94,4 @@ def do_scrape( length ):
     print "   Value Erros: " + str(failed_val)
 
 #Main Function
-do_scrape( 20 )
-
-
-
-
-
-
+do_scrape( 50000 )
