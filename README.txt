@@ -19,7 +19,9 @@ decrease the necessary run time to complete a full scan. That function is curren
 until it, too, has the extended data that was just added into the initial scraper. 
 
 8-13-2016
-The mySQL insertion tool has been completed, so the initial scraper and primary scrapers are fully fuctional as far as data storing goes. Improvements will continue to be made, however. Daily scrapes will be setup on our server to start collecting data. Run time should be around 12:00 daily to ensure the game update has taken place already.  
+The mySQL insertion tool has been completed, so the initial scraper and primary scrapers are fully fuctional as far as data storing
+goes. Improvements will continue to be made, however. Daily scrapes will be setup on our server to start collecting data. Run 
+time should be around 12:00 daily to ensure the game update has taken place already.  
 
 Languages used: 
 Python(2.7)
