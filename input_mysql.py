@@ -21,7 +21,7 @@ def sequel(item_id,item_name,item_icon,item_desc,item_is_mem,item_curr_price,ite
 
 	# create table for the day, also creating each column name
 	cursor.execute("SET sql_notes = 0; ")
-	cursor.execute("create table IF NOT EXISTS `"+ date +"` (item_id varchar(10),item_name varchar(50),item_icon varchar(255),item_desc varchar(255),item_is_mem varchar(5),item_curr_price varchar(10),item_pchange_today varchar(15),item_curr_trend varchar(15),item_trend_today varchar(15),item_day30_trend varchar(15),item_day30_change varchar(15),item_day90_trend varchar(15),item_day90_change varchar(15),item_day180_trend varchar(15),item_day180_change varchar(15));")
+	cursor.execute("create table IF NOT EXISTS `"+ date +"` (item_id varchar(10),item_name varchar(50),item_icon varchar(255),item_desc varchar(255),item_is_mem varchar(10),item_curr_price varchar(10),item_pchange_today varchar(15),item_curr_trend varchar(15),item_trend_today varchar(15),item_day30_trend varchar(15),item_day30_change varchar(15),item_day90_trend varchar(15),item_day90_change varchar(15),item_day180_trend varchar(15),item_day180_change varchar(15));")
 	cursor.execute("SET sql_notes = 1; ")
 
 	#insert data into respective columns
