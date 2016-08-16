@@ -11,9 +11,10 @@ from   input_mysql import *
 def do_scrape( length ):
     #Times the operation for efficiency testing
     start = time.time()
-
+    
     #Fetches Today's Date
     today = date.today()
+    curr_date = str(today.strftime('%m%d%Y'))
 
     #Used as ItemID iterator
     x            = 0  
@@ -56,7 +57,7 @@ def do_scrape( length ):
 		    item = data['item']['name']
                     item = item.replace("'" , "")
                     #Inputs data to mySQL database
-                    sequel( ID, item, icon_large, descr, is_members, curr_price, price_change_today, curr_trend, trend_today, day30_trend,
+                    sequel( curr_Date, ID, item, icon_large, descr, is_members, curr_price, price_change_today, curr_trend, trend_today, day30_trend,
 			day30_change, day90_trend, day90_change, day180_trend, day180_change ) 
 		    #writes to a csv file for backup   
                     items.write(
