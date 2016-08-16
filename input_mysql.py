@@ -7,17 +7,15 @@ import pymysql
 import datetime
 import credentials
 # method creates a way for Andrew to insert scraped information into a MySQL table for each corresponding day that the info is scraped
-def sequel(item_id,item_name,item_icon,item_desc,item_is_mem,item_curr_price,item_pchange_today,item_curr_trend,item_trend_today,item_day30_trend,item_day30_change,item_day90_trend,item_day90_change,item_day180_trend,item_day180_change):
+def sequel( curr_date, item_id,item_name,item_icon,item_desc,item_is_mem,item_curr_price,item_pchange_today,item_curr_trend,item_trend_today,item_day30_trend,item_day30_change,item_day90_trend,item_day90_change,item_day180_trend,item_day180_change):
 	# open database connection and connect to our test server using confidential credentials
 	db = pymysql.connect(credentials.host,credentials.username,credentials.password,"justin_test")
 
 	# prepare a cursor object using cursor() method
 	cursor = db.cursor()
 	
-	#get the current date in the formate of MONTHDAYYEAR in order to name today's table
-	date_list = []
-	today = datetime.date.today()
-	date = str(today.strftime('%m%d%Y'))
+	#get the current date
+	date = curr_date
 
 	# create table for the day, also creating each column name
 	cursor.execute("SET sql_notes = 0; ")
