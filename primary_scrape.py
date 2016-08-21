@@ -39,10 +39,6 @@ def daily_scrape():
         # Main loop : Checks all IDs from our database
         for row in item_ids:
                 # Cleans data that will be used later on to ensure no syntax errors
-                #ID   = str(item_ids[a]).replace("'", "")
-                #ID   = str(ID).replace("(", "")
-                #ID   = str(ID).replace(")", "")
-                #ID   = str(ID).replace(",", "")
                 ID = str(row).replace("(","")
                 ID = ID.replace(")","")
                 ID = ID.replace(",","")
