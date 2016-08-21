@@ -1,96 +1,95 @@
-#Andrew Godfrey
-#August 9, 2016
-#RS Item Scraper Version 0.0.5
+# Andrew Godfrey
+# 8 / 20 / 2016
+# Daily Scraping Tool
+# Version 0.0.6
 
 import json
 import urllib2
 import time
-from   datetime import *
-from   input_mysql import *
+import pymysql
+from   datetime    import date
 import os
 
-def do_scrape():
-    #Times the operation for efficiency testing
-    start = time.time()
+def daily_scrape():
+        # Gets today's date
+        today     = date.today()
+        curr_date = str(today.strftime('%m%d%Y'))
 
-    #Fetches Today's Date
-    today     = datetime.date.today()
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
- 
-    #Creates or edits text files that will contain item information
-    items              = open( 'itemFile'     + str(today) + '.txt' , 'w' )
-    itemsFailed        = open( 'itemsFailed'  + str(today) + '.txt' , 'w' )
-  
-    #Used for Bug testing
-    successful   = 0
-    failed_val   = 0
-   
-    #Main While loop: Checks Item Ids from 0 to X
-    with open('ID_used' + str(yesterday) + '.txt') as indexes:    
-         for line in indexes:
-                print "Looking for id: " + str(line) 
-                time.sleep(0.5)
-                #checks to see if item is tradeable
+        # Opens database connections
+        # db1 is home to the list of IDs we will be scraping
+        db1 = pymysql.connect(credentials.host, credentials.username, credentials.password, "initial_item_list")
+        # db2 is where we wish to send our information
+        db2 = pymysql.connect(credentials.host, credentials.username, credentials.password, "primary_scrape_test")
+
+        # Prepares cursor objects to execute mysql commands on respective databases
+        cursor1 = db1.cursor()
+        cursor2 = db2.cursor()
+
+        # Creates a table based on the current date to store item information in db2
+        cursor2.execute("create table IF NOT EXISTS `"+ curr_date +"` (item_id varchar(10),item_name varchar(50),item_icon varchar(255),item_desc varchar(255),item_is_mem varchar(10),item_curr_price varchar(10),item_pchange_today varchar(20),item_curr_trend varchar(20),item_trend_today varchar(20),item_day30_trend varchar(20),item_day30_change varchar(20),item_day90_trend varchar(30),item_day90_change varchar(20),item_day180_trend varchar(20),item_day180_change varchar(20));")
+
+        # Declares and defines a variable that will be used as an index
+        a = 0
+
+        # Fetches all the information we need from db1
+        # Gets all item ids from database and sends them to variable item_ids
+        cursor1.execute("select item_id from items;")
+        item_ids   = cursor1.fetchall()
+
+        # Main loop : Checks all IDs from our database
+        for row in item_ids:
+                # Cleans data that will be used later on to ensure no syntax errors
+                #ID   = str(item_ids[a]).replace("'", "")
+                #ID   = str(ID).replace("(", "")
+                #ID   = str(ID).replace(")", "")
+                #ID   = str(ID).replace(",", "")
+                ID = str(row).replace("(","")
+                ID = ID.replace(")","")
+                ID = ID.replace(",","")
+                ID = ID.replace("'","")
+                print ID
+                print "Looking for ID: " + str(ID) + "..."
                 try:
-                        data = json.load(urllib2.urlopen('http://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=' + str(line)))
-                        successful += 1
-                        #Stores item data into unique variables, which are then sent to mysql and a backup csv file
-                        item               = data['item']['name']
-                        ID                 = data['item']['id']
+                        # Sends a web request for item information
+                        data = json.load(urllib2.urlopen('http://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=' + str(ID)))
+                        print "Found information on ID : " + str(ID) + "..."
+                        # Cleans all item data and places them into a variable
+                        item = str(data['item']['name']).replace("'", "")
                         icon_large         = 'http://services.runescape.com/m=itemdb_rs/5276_obj_big.gif?id=' + str(ID)
-                        descr              = data['item']['description']
+                        descr              = str(data['item']['description']).replace("'", "")
                         is_members         = data['item']['members']
                         curr_price         = data['item']['current']['price']
                         price_change_today = data['item']['today']['price']
                         curr_trend         = data['item']['current']['trend']
-                        trend_today        = data['item']['today']['trend']             
+                        trend_today        = data['item']['today']['trend']
                         day30_trend        = data['item']['day30']['trend']
-                        day30_change       = data['item']['day30']['change']
+                        day30_change       = str(data['item']['day30']['change']).replace("%", "")
                         day90_trend        = data['item']['day90']['trend']
-                        day90_change       = data['item']['day90']['change']
+                        day90_change       = str(data['item']['day90']['change']).replace("%", "")
                         day180_trend       = data['item']['day180']['trend']
-                        day180_change      = data['item']['day180']['change']
-                        #Eliminates errors in the name string
-                        item = data['item']['name']
-                        item = item.replace("'" , "")
-                        #Inputs data to mySQL database
-                        sequel( ID, item, icon_large, descr, is_members, curr_price, price_change_today, curr_trend, trend_today, day30_trend,
-			 day30_change, day90_trend, day90_change, day180_trend, day180_change ) 
-                        items.write(str(index) + '-' + str(item) + '\n')
-                        print "Found item: " + str(item)
-                #If item is not tradeable, this runs
+                        day180_change      = str(data['item']['day180']['change']).replace("%", "")
+
+                        # Sends item information to database
+                        cursor2.execute("insert into `"+ curr_date +"`(item_id,item_name,item_icon,item_desc,item_is_mem,item_curr_price,item_pchange_today,item_curr_trend,item_trend_today,item_day30_trend,item_day30_change,item_day90_trend,item_day90_change,item_day180_trend,item_day180_change) VALUES('"+str(ID)+"','"+str(item)+"','"+str(icon_large)+"','"+str(descr)+"','"+str(is_members)+"','"+str(curr_price)+"','"+str(price_change_today)+"','"+str(curr_trend)+"','"+str(trend_today)+"','"+str(day30_trend)+"','"+str(day30_change)+"','"+str(day90_trend)+"','"+str(day90_change)+"','"+str(day180_trend)+"','"+str(day180_change)+"')")
+                        print "Data for ID: " + str(ID) + " placed into datebase..."
+                        # Increments the index
+                        #a += 1
+                        # Commits changes to database
+                        db2.commit()
+                # Catches error caused by untradable items
                 except urllib2.HTTPError:
-                        itemsFailed.write("ID: " + str(index))
-                        print "ID does not correlate to a tradeable item"
-                #Notifies if page request is being blocked
+                        print "Item not tradable...Error in ID list."
+                        # Catches error caused by our request being blocked. Reruns request until unblocked
                 except ValueError:
-                        failed_val += 1
+                        print "Waiting..."
                         time.sleep(2)
-    
-    #Prints time taken
-    end = time.time()
-    print end - start
-    
-    #closes files
-    items.close()
-    used_items.close()
-    unused_items.close()
-    indexes.close()
- 
-    #Looks for bugs caused from sending too many page requests and counts the number of used and unused IDs
-    print "Num successful: " + str(successful)
-    print "   Value Erros: " + str(failed_val)
 
-    lengthOfOperation = end - start
-    timeTaken = open('timeTaken.txt', 'w')
-    timeTaken.write(str(lengthOfOperation))
+        #Closes databases and commits changes
+        cursor1.close()
+        cursor2.close()
+        db1.close()
+        db2.close()
 
-#Main Function
-do_scrape()
-
-
-
-
-
-
+# Runs main function
+daily_scrape()
 
