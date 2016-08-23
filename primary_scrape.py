@@ -1,13 +1,15 @@
+#!/usr/bin/env python
 # Andrew Godfrey
 # 8 / 20 / 2016
 # Daily Scraping Tool
-# Version 0.0.6
+# Version 0.0.2
 
 import json
 import urllib2
 import time
 import pymysql
 from   datetime    import date
+from   input_mysql import *
 import os
 
 def daily_scrape():
@@ -34,12 +36,12 @@ def daily_scrape():
         # Fetches all the information we need from db1
         # Gets all item ids from database and sends them to variable item_ids
         cursor1.execute("select item_id from items;")
-        item_ids   = cursor1.fetchall()
+        item_ids   = cursor1.fetchone()
 
         # Main loop : Checks all IDs from our database
-        for row in item_ids:
-                # Cleans data that will be used later on to ensure no syntax errors
-                ID = str(row).replace("(","")
+        while item_ids is not None:
+                # Fetches and cleans data that will be used later on to ensure no syntax errors
+                ID = str(item_ids).replace("(","")
                 ID = ID.replace(")","")
                 ID = ID.replace(",","")
                 ID = ID.replace("'","")
@@ -72,12 +74,16 @@ def daily_scrape():
                         #a += 1
                         # Commits changes to database
                         db2.commit()
+                        item_ids = cursor1.fetchone()
                 # Catches error caused by untradable items
                 except urllib2.HTTPError:
                         print "Item not tradable...Error in ID list."
-                        # Catches error caused by our request being blocked. Reruns request until unblocked
+                # Catches error caused by our request being blocked. Reruns request until unblocked
                 except ValueError:
                         print "Waiting..."
+                        time.sleep(2)
+                except urllib2.HTTPDefaultErrorHandler:
+                        print "Connection lost, trying again..."
                         time.sleep(2)
 
         #Closes databases and commits changes
