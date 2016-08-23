@@ -3,7 +3,7 @@
 This is a project which scrapes the item price data from each tradable item in Runescape and places it into a MYSQL Database located on a server local to this project, which is then analyzed to find the best item(s) for merching, as well as other various information that can be drawn from price trends. 
 
 **The Goal**
-This tool will check item price and trend information daily, along with other game data, such as player base size, and seasonal trends, from a list of tradable items, which we have compiled and placed onto my server in a mySQL database, and store it in another database, where it will be analyzed daily by our propietary algorithms to find and predict useful information, such as the percent likelihood of price increases, decreases, as well as which items appear to be the best to invest in, or get rid of. Our algorithms will aim to handle both long term and short term trends to deliver the greatest accuracy possible in suggestions. 
+-This tool will check item price and trend information daily, along with other game data, such as player base size, and seasonal trends, from a list of tradable items, which we have compiled and placed onto my server in a mySQL database, and store it in another database, where it will be analyzed daily by our propietary algorithms to find and predict useful information, such as the percent likelihood of price increases, decreases, as well as which items appear to be the best to invest in, or get rid of. Our algorithms will aim to handle both long term and short term trends to deliver the greatest accuracy possible in suggestions. 
 
 ##Notes:
 
