@@ -2,6 +2,9 @@
 
 This is a project which scrapes the item price data from each tradable item in Runescape and places it into a MYSQL Database located on a server local to this project, which is then analyzed to find the best item(s) for merching, as well as other various information that can be drawn from price trends. 
 
+**The Goal**
+This tool will check item price and trend information daily, along with other game data, such as player base size, and seasonal trends, from a list of tradable items, which we have compiled and placed onto my server in a mySQL database, and store it in another database, where it will be analyzed daily by our propietary algorithms to find and predict useful information, such as the percent likelihood of price increases, decreases, as well as which items appear to be the best to invest in, or get rid of. Our algorithms will aim to handle both long term and short term trends to deliver the greatest accuracy possible in suggestions. 
+
 ##Notes:
 
 **8-9-2016**
@@ -12,6 +15,9 @@ This is a project which scrapes the item price data from each tradable item in R
 
 **8-13-2016**
 - The mySQL insertion tool has been completed, so the initial scraper and primary scrapers are fully fuctional as far as data storing goes. Improvements will continue to be made, however. Daily scrapes will be setup on our server to start collecting data. Run time should be around 12:00 daily to ensure the game update has taken place already.  
+
+**8-22-2016**
+- Improved the new daily scraping tool to ensure that the script does not, for any reason, stop after initialization. Also set the script to run daily at 12PM via crontab on my linux server. The inital scraper tool found about 4000 tradable items in the 50000 item Ids that I searched through. I am now using that list of tradable items as the list to search through and scrape daily for information from the daily scraper (primary_scraper). The tool goes line by line through one mySQL database and uses the ID to input information from the same itemID into a second database, which will then be used by our algorithms to begin finding the best items to merch, as well as other information, such as likelihood of certain item prices to raise, drop, or even out. More information on what our algorithms will do is coming in future updates, as they are currently being built. Structured write-ups have just been shared and discussed for initial concept ideas. 
 
 ##Languages used:
 - Python (2.7 & 3.5)
