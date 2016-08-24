@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # Andrew Godfrey
-# 8 / 20 / 2016
+# 8 / 23 / 2016
 # Daily Scraping Tool
-# Version 0.0.2
+# Version 0.0.3
 
 import json
 import urllib2
@@ -82,10 +82,12 @@ def daily_scrape():
                 except ValueError:
                         print "Waiting..."
                         time.sleep(2)
-                except urllib2.HTTPDefaultErrorHandler:
+                except urllib2.URLError:
                         print "Connection lost, trying again..."
                         time.sleep(2)
-
+                except socket.error:
+                        print "Socket Error. Reconnecting..."
+                        time.sleep(2)
         #Closes databases and commits changes
         cursor1.close()
         cursor2.close()
