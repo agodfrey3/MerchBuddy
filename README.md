@@ -22,8 +22,11 @@ This is a project which scrapes the item price data from each tradable item in R
 **9-14-2016**
 - Started creating an algorithm to find the average daily change of each item. I still need to add documentation, as well as complete the script. As of now, the script runs through each item_id and calculates the daily change, and then finds the average. There must be further development to save the daily averages for future lookup, and I wish to create an all-time min/max value in case that proves useful. Future notes will expand on the features of this script. 
 
+**2-24-2018**
+- Added minimal functionality for training regression models on the price data for items. This includes simple regressors found in SKLearn, and allows iteration over all possible models to ensure the best one is used.
+
 ##Languages used:
-- Python (2.7 & 3.5)
+- Python (2.X-3.X)
 
 ##Project by: 
 [Andrew Godfrey](https://github.com/agodfrey3/)
